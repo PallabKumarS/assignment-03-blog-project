@@ -4,7 +4,7 @@ A backend system for a blogging platform where users can create, update, and del
 
 ## Live URL
 
-[Live Demo]()
+### [Live Link](https://pks-blog-assignment.vercel.app/)
 
 ## Features
 
