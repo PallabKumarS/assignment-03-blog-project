@@ -20,13 +20,13 @@ app.use(
 );
 
 // application routes
-app.use('/api/v1', router);
+app.use('/api', router);
 
 const test = (req: Request, res: Response) => {
   res.send('Server is running');
 };
 
-app.get('/api/v1', test);
+app.get('/api', test);
 
 app.use(globalErrorHandler);
 
