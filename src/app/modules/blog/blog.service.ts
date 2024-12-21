@@ -40,7 +40,27 @@ const createBlogIntoDB = async (payload: TBlog) => {
 };
 
 // update blog into db here
-const updateBlogIntoDB = async (id: string, payload: Partial<TBlog>) => {
+const updateBlogIntoDB = async (
+  id: string,
+  payload: Partial<TBlog>,
+  authorId: Types.ObjectId,
+) => {
+  // checking if blog exists or not
+  const isBlogExists = await BlogModel.isBlogExistsById(id);
+  if (!isBlogExists) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Blog not found');
+  }
+
+  // checking if blog author is same as user id
+  if (isBlogExists?.author.toString() !== authorId.toString()) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      'You are not authorized to update this blog',
+    );
+  }
+
+  console.log(isBlogExists?.author.toString(), authorId.toString(),'hit');
+
   const result = await BlogModel.findOneAndUpdate({ _id: id }, payload, {
     new: true,
     runValidators: true,

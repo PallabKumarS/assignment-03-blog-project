@@ -10,7 +10,7 @@ async function main() {
     // connect to database
     console.log('Connecting to database...');
     await mongoose.connect(config.database_url as string, {
-      dbName: 'blogDB',
+      dbName: config.dbName,
     });
     console.log('Connected to database');
 

@@ -42,10 +42,14 @@ const updateBlog = catchAsync(async (req, res) => {
     );
   }
 
-  const result = await BlogServices.updateBlogIntoDB(id, {
-    title,
-    content,
-  });
+  const result = await BlogServices.updateBlogIntoDB(
+    id,
+    {
+      title,
+      content,
+    },
+    req?.body?.author,
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
