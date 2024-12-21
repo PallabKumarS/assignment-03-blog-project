@@ -6,7 +6,7 @@ import QueryBuilder from '../../builder/QueryBuilder';
 import { Types } from 'mongoose';
 
 // get all blogs from db here
-const getAllBlogsFromDB = async (query: Record<Types.ObjectId, unknown>) => {
+const getAllBlogsFromDB = async (query: Record<string, unknown>) => {
   const searchableFields = ['title', 'content'];
 
   const blogQuery = new QueryBuilder(BlogModel.find(), query)
@@ -40,10 +40,7 @@ const createBlogIntoDB = async (payload: TBlog) => {
 };
 
 // update blog into db here
-const updateBlogIntoDB = async (
-  id: Types.ObjectId,
-  payload: Partial<TBlog>,
-) => {
+const updateBlogIntoDB = async (id: string, payload: Partial<TBlog>) => {
   const result = await BlogModel.findOneAndUpdate({ _id: id }, payload, {
     new: true,
     runValidators: true,
@@ -53,10 +50,7 @@ const updateBlogIntoDB = async (
 };
 
 // delete blog from db here
-const deleteBlogFromDB = async (
-  id: Types.ObjectId,
-  authorId: Types.ObjectId,
-) => {
+const deleteBlogFromDB = async (id: string, authorId: Types.ObjectId) => {
   // checking if blog exists or not
   const isBlogExists = await BlogModel.isBlogExistsById(id);
 
@@ -65,7 +59,7 @@ const deleteBlogFromDB = async (
   }
 
   // checking if blog author is same as user id
-  if (isBlogExists?.author !== authorId) {
+  if (isBlogExists?.author.toString() !== authorId.toString()) {
     throw new AppError(
       httpStatus.FORBIDDEN,
       'You are not authorized to delete this blog',

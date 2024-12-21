@@ -10,5 +10,5 @@ export type TBlog = {
 
 export interface IBlog extends Model<TBlog> {
   isBlogExists(title: string, author: Types.ObjectId): Promise<TBlog>;
-  isBlogExistsById(id: Types.ObjectId): Promise<TBlog>;
+  isBlogExistsById(id: string): Promise<TBlog>;
 }

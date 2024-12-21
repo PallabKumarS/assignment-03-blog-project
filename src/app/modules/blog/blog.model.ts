@@ -45,9 +45,7 @@ blogSchema.statics.isBlogExists = async function (
   return await BlogModel.findOne({ title, author });
 };
 
-blogSchema.statics.isBlogExistsById = async function (
-  id: Schema.Types.ObjectId,
-) {
+blogSchema.statics.isBlogExistsById = async function (id: string) {
   return await BlogModel.findOne({ _id: id });
 };
 
