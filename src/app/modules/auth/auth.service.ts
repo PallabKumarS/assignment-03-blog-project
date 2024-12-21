@@ -21,23 +21,21 @@ const loginUserIntoDB = async (payload: TLoginUser) => {
   const user = await UserModel.isUserExists(payload.email);
 
   if (!user) {
-    throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
+    throw new AppError(httpStatus.UNAUTHORIZED, 'Invalid credentials');
   }
   // checking if the user is blocked
+  const isBlocked = user?.isBlocked;
 
-  const isDeleted = user?.isBlocked;
-
-  if (isDeleted) {
+  if (isBlocked) {
     throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked !');
   }
 
   //checking if the password is correct
-
   if (!(await UserModel.isPasswordMatched(payload?.password, user?.password))) {
-    throw new AppError(httpStatus.FORBIDDEN, 'Password do not matched');
+    throw new AppError(httpStatus.UNAUTHORIZED, 'Invalid credentials');
   }
 
-  //create token and sent to the  client
+  //create token
   const jwtPayload = {
     userEmail: user.email,
     role: user.role,

@@ -10,7 +10,7 @@ class QueryBuilder<T> {
   }
 
   search(searchableFields: string[]) {
-    const searchTerm = this?.query?.searchTerm;
+    const searchTerm = this?.query?.search;
     if (searchTerm) {
       this.modelQuery = this.modelQuery.find({
         $or: searchableFields.map(
@@ -26,22 +26,20 @@ class QueryBuilder<T> {
   }
 
   filter() {
-    const queryObj = { ...this.query }; // copy
-
-    // Filtering
-    const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
-
-    excludeFields.forEach((el) => delete queryObj[el]);
-
-    this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
-
+    if (this?.query?.filter) {
+      this.modelQuery = this.modelQuery.find({
+        author: this?.query?.filter as FilterQuery<T>,
+      });
+      return this;
+    }
     return this;
   }
 
   sort() {
     const sort =
-      (this?.query?.sort as string)?.split(',')?.join(' ') || '-createdAt';
-    this.modelQuery = this.modelQuery.sort(sort as string);
+      `${(this?.query?.sortOrder as string) === 'asc' ? '' : '-'}${this?.query?.sortBy as string}` ||
+      '-createdAt';
+    this.modelQuery = this.modelQuery.sort(sort);
 
     return this;
   }
@@ -61,6 +59,16 @@ class QueryBuilder<T> {
       (this?.query?.fields as string)?.replace(/,/g, ' ') || '-__v';
 
     this.modelQuery = this.modelQuery.select(fields);
+    return this;
+  }
+
+  populate(populateFields: string[]) {
+    if (populateFields.length > 0) {
+      populateFields.map((field) => {
+        this.modelQuery = this.modelQuery.populate(field);
+        return this;
+      });
+    }
     return this;
   }
 }
