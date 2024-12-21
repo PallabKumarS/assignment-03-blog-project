@@ -59,8 +59,6 @@ const updateBlogIntoDB = async (
     );
   }
 
-  console.log(isBlogExists?.author.toString(), authorId.toString(),'hit');
-
   const result = await BlogModel.findOneAndUpdate({ _id: id }, payload, {
     new: true,
     runValidators: true,
